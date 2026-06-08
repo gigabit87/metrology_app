@@ -88,7 +88,7 @@ function Register({ setIsAuthenticated }) {
         </form>
         
         <Link to="/login">
-          <button className="link-btn">Уже есть аккаунт? Войти →</button>
+          <button className="link-btn">Уже есть аккаунт? Войти</button>
         </Link>
       </div>
     </div>

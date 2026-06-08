@@ -268,3 +268,36 @@ button:active {
     width: 100%;
   }
 }
+
+.recharts-default-tooltip {
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--primary-warm) !important;
+  border-radius: 8px !important;
+}
+
+.recharts-tooltip-label {
+  color: var(--text-dark) !important;
+}
+
+/* Стили для графика recharts */
+.recharts-text {
+  fill: var(--text-dark) !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+}
+
+.recharts-cartesian-axis-label {
+  fill: var(--text-dark) !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+}
+
+.recharts-legend-item-text {
+  fill: var(--text-soft) !important;
+  font-size: 11px !important;
+}
+
+.recharts-tooltip-cursor {
+  stroke: var(--primary-deep) !important;
+  stroke-width: 1px !important;
+}

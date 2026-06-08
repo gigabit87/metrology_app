@@ -4,7 +4,7 @@ import axios from 'axios';
 
 const API_URL = 'http://localhost:8000';
 
-function Login({ setIsAuthenticated }) {
+function Login({ setIsAuthenticated, setUser }) {
   const [formData, setFormData] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -25,8 +25,14 @@ function Login({ setIsAuthenticated }) {
       });
       
       localStorage.setItem('access_token', response.data.access_token);
+
+      const userResponse = await axios.get(`${API_URL}/api/auth/me`, {
+        headers: { Authorization: `Bearer ${response.data.access_token}` }
+      });
+      setUser(userResponse.data);
+      
       setIsAuthenticated(true);
-      navigate('/calculator');
+      navigate('/');
     } catch (err) {
       setError(err.response?.data?.detail || 'Ошибка входа. Проверьте имя пользователя и пароль.');
     } finally {

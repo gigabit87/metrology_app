@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { Line, Scatter, XAxis, YAxis, CartesianGrid, ResponsiveContainer, ComposedChart, Tooltip } from 'recharts';
 
 const API_URL = 'http://localhost:8000';
 
@@ -64,9 +65,11 @@ function Measurements({ user, setUser }) {
     return date.toLocaleString('ru-RU');
   };
 
-  const formatNumber = (num) => {
+  const formatNumber = (num, decimals = 4) => {
     if (num === undefined || num === null) return '';
-    return typeof num === 'number' ? num.toFixed(4) : num;
+    const parsed = parseFloat(num);
+    if (isNaN(parsed)) return '0';
+    return parsed.toFixed(decimals);
   };
 
   if (loading) {
@@ -161,7 +164,65 @@ function Measurements({ user, setUser }) {
 
             {selectedCalc.calculation_type === 'regression' ? (
               <>
-                {/* Граничные условия */}
+                {selectedCalc.results?.chartPoints && selectedCalc.results?.chartLine && (
+                  <div style={{ 
+                    marginBottom: '1rem', 
+                    padding: '0.5rem', 
+                    background: 'var(--bg-card)', 
+                    borderRadius: '12px',
+                    border: '1px solid var(--primary-warm)'
+                  }}>
+                    <div style={{ fontSize: '0.65rem', color: 'var(--text-soft)', marginBottom: '0.3rem' }}>График регрессии</div>
+                    <ResponsiveContainer width="100%" height={250}>
+                      <ComposedChart>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis 
+                          dataKey="x" 
+                          type="number" 
+                          label={{ value: selectedCalc.input_data?.variableName || 'X', position: 'bottom' }} 
+                          domain={['auto', 'auto']}
+                        />
+                        <YAxis 
+                          dataKey="y" 
+                          type="number" 
+                          label={{ value: 'Y', angle: -90, position: 'left' }} 
+                          domain={['auto', 'auto']}
+                        />
+                        <Tooltip 
+                          formatter={(value, name, props) => {
+                            if (name === 'y') return [`${value} ${selectedCalc.input_data?.dimensionY || 'отн. ед.'}`, 'Значение Y'];
+                            return [value, name];
+                          }}
+                          labelFormatter={(label) => `${selectedCalc.input_data?.variableName || 'X'} = ${label} ${selectedCalc.input_data?.dimensionX || 'мг/л'}`}
+                          contentStyle={{
+                            backgroundColor: '#fff',
+                            border: '1px solid var(--primary-warm)',
+                            borderRadius: '8px',
+                            padding: '8px'
+                          }}
+                        />
+                        <Line 
+                          data={selectedCalc.results.chartLine} 
+                          type="monotone" 
+                          dataKey="y" 
+                          stroke="var(--primary-deep)" 
+                          strokeWidth={2.5} 
+                          dot={false} 
+                          name="Линия регрессии"
+                        />
+                        <Scatter 
+                          data={selectedCalc.results.chartPoints} 
+                          fill="var(--primary-warm)" 
+                          stroke="#fff" 
+                          strokeWidth={1.5} 
+                          name="Точки"
+                          r={5} 
+                        />
+                      </ComposedChart>
+                    </ResponsiveContainer>
+                  </div>
+                )}
+
                 <div style={{
                   padding: '0.8rem',
                   background: 'var(--bg-card)',
@@ -171,11 +232,10 @@ function Measurements({ user, setUser }) {
                 }}>
                   <div style={{ fontSize: '0.7rem', color: 'var(--text-soft)', textTransform: 'uppercase' }}>Граничные условия</div>
                   <div style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--text-dark)' }}>
-                    L = {selectedCalc.results?.n}; R = {selectedCalc.results?.sPercent || '0'}%; P = {selectedCalc.input_data?.confidence || 95}%
+                    L = {selectedCalc.results?.n || '—'}; R = {selectedCalc.results?.s_percent || '0'}%; P = {selectedCalc.input_data?.confidence || 95}%
                   </div>
                 </div>
 
-                {/* Параметры регрессии */}
                 <div style={{
                   padding: '0.8rem',
                   background: 'var(--bg-card)',
@@ -185,11 +245,10 @@ function Measurements({ user, setUser }) {
                 }}>
                   <div style={{ fontSize: '0.7rem', color: 'var(--text-soft)', textTransform: 'uppercase' }}>Параметры регрессии</div>
                   <div style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--text-dark)' }}>
-                    a = {selectedCalc.results?.a}; b = {selectedCalc.results?.b}; Sa = {selectedCalc.results?.aPercent || '0'}%; Sb = {selectedCalc.results?.bPercent || '0'}%
+                    a = {formatNumber(selectedCalc.results?.a)}; b = {formatNumber(selectedCalc.results?.b)}; Sa = {selectedCalc.results?.a_percent || '0'}%; Sb = {selectedCalc.results?.b_percent || '0'}%
                   </div>
                 </div>
 
-                {/* Рабочий диапазон */}
                 <div style={{
                   padding: '0.8rem',
                   background: 'var(--bg-card)',
@@ -199,24 +258,23 @@ function Measurements({ user, setUser }) {
                 }}>
                   <div style={{ fontSize: '0.7rem', color: 'var(--text-soft)', textTransform: 'uppercase' }}>Рабочий диапазон</div>
                   <div style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--text-dark)' }}>
-                    {selectedCalc.input_data?.variableName || 'X'}min = {selectedCalc.results?.xMin || '0'} {selectedCalc.input_data?.dimensionX || 'мг/л'}; {selectedCalc.input_data?.variableName || 'X'}max = {selectedCalc.results?.xMax || '0'} {selectedCalc.input_data?.dimensionX || 'мг/л'}
+                    {selectedCalc.input_data?.variableName || 'X'}min = {formatNumber(selectedCalc.results?.x_min)} {selectedCalc.input_data?.dimensionX || 'мг/л'}; 
+                    {selectedCalc.input_data?.variableName || 'X'}max = {formatNumber(selectedCalc.results?.x_max)} {selectedCalc.input_data?.dimensionX || 'мг/л'}
                   </div>
                 </div>
 
-                {/* Подробные результаты (опционально) */}
-                <details style={{ marginTop: '1rem' }}>
-                  <summary style={{ cursor: 'pointer', color: 'var(--primary-deep)', fontSize: '0.85rem' }}>Подробные результаты</summary>
-                  <div style={{ marginTop: '1rem', padding: '1rem', background: 'var(--bg-light)', borderRadius: '12px' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                      <div><span style={{ fontSize: '0.65rem', color: 'var(--text-soft)' }}>Уравнение</span><br />{selectedCalc.results?.equation}</div>
-                      <div><span style={{ fontSize: '0.65rem', color: 'var(--text-soft)' }}>Коэф. корреляции R</span><br />{selectedCalc.results?.r}</div>
-                      <div><span style={{ fontSize: '0.65rem', color: 'var(--text-soft)' }}>Детерминация R²</span><br />{selectedCalc.results?.r2}</div>
-                      <div><span style={{ fontSize: '0.65rem', color: 'var(--text-soft)' }}>Остаточное СКО s</span><br />{selectedCalc.results?.s}</div>
-                      <div><span style={{ fontSize: '0.65rem', color: 'var(--text-soft)' }}>a ± Δa</span><br />{selectedCalc.results?.a} ± {selectedCalc.results?.aCI}</div>
-                      <div><span style={{ fontSize: '0.65rem', color: 'var(--text-soft)' }}>b ± Δb</span><br />{selectedCalc.results?.b} ± {selectedCalc.results?.bCI}</div>
-                    </div>
+                <div style={{
+                  padding: '0.8rem',
+                  background: 'var(--bg-card)',
+                  borderRadius: '12px',
+                  border: '1px solid var(--primary-warm)',
+                  marginBottom: '1rem'
+                }}>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-soft)', textTransform: 'uppercase' }}>Качество модели</div>
+                  <div style={{ fontSize: '1rem', fontWeight: 500, color: 'var(--text-dark)' }}>
+                    Уравнение: {selectedCalc.results?.equation || 'Y = a + b×X'}; R² = {formatNumber(selectedCalc.results?.r2, 6)}
                   </div>
-                </details>
+                </div>
 
                 {selectedCalc.input_data?.points && (
                   <div style={{ marginTop: '0.8rem' }}>
@@ -250,7 +308,6 @@ function Measurements({ user, setUser }) {
               </>
             ) : (
               <>
-                {/* Основной результат выборки в стандартном формате */}
                 <div style={{
                   padding: '0.8rem',
                   background: 'var(--bg-card)',
@@ -262,18 +319,26 @@ function Measurements({ user, setUser }) {
                   <div style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-dark)', fontFamily: 'monospace' }}>
                     {(() => {
                       const mean = parseFloat(selectedCalc.results?.mean);
-                      const ciLower = parseFloat(selectedCalc.results?.ciLower);
-                      const ciUpper = parseFloat(selectedCalc.results?.ciUpper);
-                      const halfWidth = ((ciUpper - mean) / 2).toFixed(2);
-                      const errorPercent = ((halfWidth / mean) * 100).toFixed(1);
+                      const ciLower = parseFloat(selectedCalc.results?.ci_lower);
+                      const ciUpper = parseFloat(selectedCalc.results?.ci_upper);
+                      const cv = parseFloat(selectedCalc.results?.cv);
+                      
+                      if (isNaN(mean) || isNaN(ciLower) || isNaN(ciUpper) || isNaN(cv)) {
+                        const varName = selectedCalc.input_data?.variableName || 'X';
+                        const unit = selectedCalc.input_data?.resultUnit || 'мг/л';
+                        return `${varName} = ${formatNumber(mean)} ${unit}`;
+                      }
+                      
+                      const halfWidth = ((ciUpper - mean) / 2);
+                      const errorPercent = isNaN(cv) ? 0 : cv;
                       const varName = selectedCalc.input_data?.variableName || 'X';
                       const unit = selectedCalc.input_data?.resultUnit || 'мг/л';
-                      return `${varName} = ${mean.toFixed(2)}±${halfWidth} (${errorPercent}%) ${unit}`;
+                      
+                      return `${varName} = ${formatNumber(mean)}±${halfWidth.toFixed(2)} (${errorPercent.toFixed(1)}%) ${unit}`;
                     })()}
                   </div>
                 </div>
 
-                {/* Статистические параметры */}
                 <div style={{
                   padding: '0.8rem',
                   background: 'var(--bg-card)',
@@ -283,11 +348,10 @@ function Measurements({ user, setUser }) {
                 }}>
                   <div style={{ fontSize: '0.7rem', color: 'var(--text-soft)', textTransform: 'uppercase' }}>Статистические параметры</div>
                   <div style={{ fontSize: '0.9rem', color: 'var(--text-dark)' }}>
-                    n = {selectedCalc.results?.n}; X̄ = {selectedCalc.results?.mean}; s = {selectedCalc.results?.stdDev}; CV = {selectedCalc.results?.cv}%
+                    n = {selectedCalc.results?.n || '—'}; X̄ = {formatNumber(selectedCalc.results?.mean)}; s = {formatNumber(selectedCalc.results?.std_dev)}; CV = {formatNumber(selectedCalc.results?.cv)}%
                   </div>
                 </div>
 
-                {/* Доверительный интервал */}
                 <div style={{
                   padding: '0.8rem',
                   background: 'var(--bg-card)',
@@ -297,30 +361,9 @@ function Measurements({ user, setUser }) {
                 }}>
                   <div style={{ fontSize: '0.7rem', color: 'var(--text-soft)', textTransform: 'uppercase' }}>Доверительный интервал</div>
                   <div style={{ fontSize: '0.9rem', color: 'var(--text-dark)' }}>
-                    P = {selectedCalc.input_data?.confidence || 95}%; ΔX = {selectedCalc.results?.ciLower} … {selectedCalc.results?.ciUpper}
+                    P = {selectedCalc.input_data?.confidence || 95}%; ΔX = {formatNumber(selectedCalc.results?.ci_lower)} … {formatNumber(selectedCalc.results?.ci_upper)}
                   </div>
                 </div>
-
-                {/* Подробные результаты (опционально) */}
-                <details style={{ marginTop: '1rem' }}>
-                  <summary style={{ cursor: 'pointer', color: 'var(--primary-deep)', fontSize: '0.85rem' }}>Подробные результаты</summary>
-                  <div style={{ marginTop: '1rem', padding: '1rem', background: 'var(--bg-light)', borderRadius: '12px' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                      <div><span style={{ fontSize: '0.65rem', color: 'var(--text-soft)' }}>Объём выборки (n)</span><br />{selectedCalc.results?.n}</div>
-                      <div><span style={{ fontSize: '0.65rem', color: 'var(--text-soft)' }}>Сумма (Σ)</span><br />{selectedCalc.results?.sum}</div>
-                      <div><span style={{ fontSize: '0.65rem', color: 'var(--text-soft)' }}>Среднее (x̄)</span><br />{selectedCalc.results?.mean}</div>
-                      <div><span style={{ fontSize: '0.65rem', color: 'var(--text-soft)' }}>Медиана</span><br />{selectedCalc.results?.median}</div>
-                      <div><span style={{ fontSize: '0.65rem', color: 'var(--text-soft)' }}>Дисперсия (s²)</span><br />{selectedCalc.results?.variance}</div>
-                      <div><span style={{ fontSize: '0.65rem', color: 'var(--text-soft)' }}>СКО (s)</span><br />{selectedCalc.results?.stdDev}</div>
-                      <div><span style={{ fontSize: '0.65rem', color: 'var(--text-soft)' }}>Стандартная ошибка SEM</span><br />{selectedCalc.results?.sem}</div>
-                      <div><span style={{ fontSize: '0.65rem', color: 'var(--text-soft)' }}>Коэф. вариации CV (%)</span><br />{selectedCalc.results?.cv}%</div>
-                      <div><span style={{ fontSize: '0.65rem', color: 'var(--text-soft)' }}>Минимум / Максимум</span><br />{selectedCalc.results?.min} / {selectedCalc.results?.max}</div>
-                      <div><span style={{ fontSize: '0.65rem', color: 'var(--text-soft)' }}>Размах</span><br />{selectedCalc.results?.range}</div>
-                      <div><span style={{ fontSize: '0.65rem', color: 'var(--text-soft)' }}>Доверительный интервал</span><br />{selectedCalc.results?.ciLower} … {selectedCalc.results?.ciUpper}</div>
-                      <div><span style={{ fontSize: '0.65rem', color: 'var(--text-soft)' }}>t-критерий</span><br />t({selectedCalc.results?.n - 1}) = {selectedCalc.results?.tValue}</div>
-                    </div>
-                  </div>
-                </details>
 
                 {selectedCalc.input_data?.data && (
                   <div style={{ marginTop: '0.8rem' }}>

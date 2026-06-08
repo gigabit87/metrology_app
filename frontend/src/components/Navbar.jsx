@@ -16,6 +16,12 @@ function Navbar({ user, onLogout }) {
     navigate(path);
   };
 
+  const handleLogout = () => {
+    onLogout();  
+
+    window.location.href = '/';  
+  };
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -51,8 +57,9 @@ function Navbar({ user, onLogout }) {
           fontSize: '1.25rem',
           fontWeight: 600,
           color: 'var(--primary-deep)',
-          letterSpacing: '-0.02em'
-        }}>
+          letterSpacing: '-0.02em',
+          cursor: 'pointer'
+        }} onClick={() => navigate('/')}>
           Метрологическая лаборатория
         </div>
         
@@ -139,7 +146,7 @@ function Navbar({ user, onLogout }) {
               <div style={{ fontSize: '0.75rem', color: 'var(--text-soft)' }}>{user?.email}</div>
             </div>
             <button
-              onClick={onLogout}
+              onClick={handleLogout}
               style={{
                 background: 'transparent',
                 color: 'var(--error)',
@@ -147,7 +154,8 @@ function Navbar({ user, onLogout }) {
                 padding: '0.5rem 1rem',
                 textAlign: 'left',
                 justifyContent: 'flex-start',
-                borderRadius: 0
+                borderRadius: 0,
+                width: '100%'
               }}
             >
               Выйти
