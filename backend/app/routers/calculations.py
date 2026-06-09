@@ -9,7 +9,6 @@ from ..services.sample import calculate_sample_statistics, calculate_grubbs
 
 router = APIRouter(prefix="/api/calculations", tags=["calculations"])
 
-# Схемы запросов
 class RegressionRequest(BaseModel):
     points: List[Dict[str, float]]
     confidence: float = 95
@@ -41,7 +40,7 @@ class GrubbsRequest(BaseModel):
 
 @router.post("/regression")
 def regression(request: RegressionRequest):
-    """Расчёт регрессионного анализа"""
+
     try:
         result = calculate_regression(request.points, request.confidence)
         return result
@@ -53,7 +52,7 @@ def regression(request: RegressionRequest):
 
 @router.post("/regression/predict_y")
 def predict_y(request: PredictRequest):
-    """Прогнозирование Y по X"""
+
     if request.x0 is None:
         raise HTTPException(status_code=400, detail="Не указано значение X")
     try:
@@ -68,7 +67,7 @@ def predict_y(request: PredictRequest):
 
 @router.post("/regression/predict_x")
 def predict_x(request: PredictRequest):
-    """Прогнозирование X по Y"""
+
     if request.y0 is None:
         raise HTTPException(status_code=400, detail="Не указано значение Y")
     try:
@@ -83,7 +82,7 @@ def predict_x(request: PredictRequest):
 
 @router.post("/sample")
 def sample(request: SampleRequest):
-    """Расчёт статистических характеристик выборки"""
+
     if len(request.data) < 2:
         raise HTTPException(status_code=400, detail="Для статистической обработки нужно минимум 2 значения")
     try:
@@ -95,7 +94,7 @@ def sample(request: SampleRequest):
 
 @router.post("/sample/grubbs")
 def grubbs(request: GrubbsRequest):
-    """Проверка на выбросы по критерию Граббса"""
+
     if len(request.data) < 3:
         raise HTTPException(status_code=400, detail="Для проверки на выбросы нужно минимум 3 значения")
     try:

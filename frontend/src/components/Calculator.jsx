@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { Line, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ComposedChart } from 'recharts';
+import { API_URL } from '../config';
 
-const API_URL = 'http://localhost:8000';
+//const API_URL = 'http://localhost:8000';
 
 const Section = ({ title, children, bg = 'var(--bg-light)' }) => (
   <div style={{ padding: '1rem', background: bg, borderRadius: '12px', marginBottom: '1rem' }}>

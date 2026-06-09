@@ -9,7 +9,7 @@ function Navbar({ user, onLogout }) {
 
   const navItems = [
     { path: '/calculator', name: 'Расчёты', icon: '' },
-    { path: '/measurements', name: 'История измерений', icon: '' },
+    { path: '/measurements', name: 'История', icon: '' },
   ];
 
   const handleNavigation = (path) => {
@@ -17,9 +17,8 @@ function Navbar({ user, onLogout }) {
   };
 
   const handleLogout = () => {
-    onLogout();  
-
-    window.location.href = '/';  
+    onLogout();
+    navigate('/');
   };
 
   useEffect(() => {
@@ -39,25 +38,25 @@ function Navbar({ user, onLogout }) {
       left: 0,
       right: 0,
       background: 'var(--bg-card)',
-      padding: '1rem 2rem',
+      padding: '0.75rem 1rem',
       boxShadow: 'var(--shadow-sm)',
       zIndex: 1000,
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
       flexWrap: 'wrap',
-      gap: '1rem'
+      gap: '0.5rem'
     }}>
       <div style={{
         display: 'flex',
         alignItems: 'center',
-        gap: '2rem'
+        gap: '1rem',
+        flexWrap: 'wrap'
       }}>
         <div style={{
-          fontSize: '1.25rem',
+          fontSize: '1rem',
           fontWeight: 600,
           color: 'var(--primary-deep)',
-          letterSpacing: '-0.02em',
           cursor: 'pointer'
         }} onClick={() => navigate('/')}>
           Метрологическая лаборатория
@@ -65,7 +64,8 @@ function Navbar({ user, onLogout }) {
         
         <div style={{
           display: 'flex',
-          gap: '0.5rem'
+          gap: '0.5rem',
+          flexWrap: 'wrap'
         }}>
           {navItems.map((item) => (
             <button
@@ -75,15 +75,14 @@ function Navbar({ user, onLogout }) {
                 background: location.pathname === item.path ? 'var(--primary-warm)' : 'transparent',
                 color: location.pathname === item.path ? 'var(--text-dark)' : 'var(--primary-deep)',
                 border: 'none',
-                padding: '0.5rem 1.25rem',
+                padding: '0.3rem 0.8rem',
                 borderRadius: '40px',
                 cursor: 'pointer',
-                fontSize: '0.85rem',
+                fontSize: '0.75rem',
                 fontWeight: 500,
-                fontFamily: 'inherit',
-                transition: 'all 0.2s ease',
                 marginTop: 0,
-                width: 'auto'
+                width: 'auto',
+                whiteSpace: 'nowrap'
               }}
               onMouseEnter={(e) => {
                 if (location.pathname !== item.path) {
@@ -96,7 +95,7 @@ function Navbar({ user, onLogout }) {
                 }
               }}
             >
-              <span style={{ marginRight: '0.5rem', opacity: 0.7 }}>{item.icon}</span>
+              <span style={{ marginRight: '0.3rem', opacity: 0.7 }}>{item.icon}</span>
               {item.name}
             </button>
           ))}
@@ -108,17 +107,18 @@ function Navbar({ user, onLogout }) {
           onClick={() => setIsProfileOpen(!isProfileOpen)}
           style={{
             background: 'var(--primary-warm)',
-            width: '44px',
-            height: '44px',
-            borderRadius: '44px',
+            width: '36px',
+            height: '36px',
+            borderRadius: '36px',
             padding: 0,
             marginTop: 0,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '1.1rem',
+            fontSize: '0.9rem',
             fontWeight: 500,
-            color: 'var(--text-dark)'
+            color: 'var(--text-dark)',
+            cursor: 'pointer'
           }}
         >
           {user?.full_name ? user.full_name.charAt(0).toUpperCase() : user?.username?.charAt(0).toUpperCase() || 'U'}
@@ -127,23 +127,23 @@ function Navbar({ user, onLogout }) {
         {isProfileOpen && (
           <div style={{
             position: 'absolute',
-            top: '52px',
+            top: '40px',
             right: 0,
             background: 'var(--bg-card)',
             border: '1px solid var(--primary-warm)',
-            borderRadius: '16px',
-            padding: '0.75rem 0',
-            minWidth: '220px',
+            borderRadius: '12px',
+            padding: '0.5rem 0',
+            minWidth: '180px',
             boxShadow: 'var(--shadow-md)',
             zIndex: 1001
           }}>
             <div style={{
-              padding: '0.75rem 1rem',
+              padding: '0.5rem 1rem',
               borderBottom: '1px solid var(--primary-warm)',
-              marginBottom: '0.5rem'
+              marginBottom: '0.3rem'
             }}>
-              <div style={{ fontWeight: 600, fontSize: '0.9rem' }}>{user?.full_name || user?.username}</div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-soft)' }}>{user?.email}</div>
+              <div style={{ fontWeight: 600, fontSize: '0.85rem' }}>{user?.full_name || user?.username}</div>
+              <div style={{ fontSize: '0.7rem', color: 'var(--text-soft)' }}>{user?.email}</div>
             </div>
             <button
               onClick={handleLogout}
@@ -151,11 +151,13 @@ function Navbar({ user, onLogout }) {
                 background: 'transparent',
                 color: 'var(--error)',
                 marginTop: 0,
-                padding: '0.5rem 1rem',
+                padding: '0.4rem 1rem',
                 textAlign: 'left',
                 justifyContent: 'flex-start',
                 borderRadius: 0,
-                width: '100%'
+                width: '100%',
+                fontSize: '0.8rem',
+                cursor: 'pointer'
               }}
             >
               Выйти

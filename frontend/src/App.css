@@ -279,7 +279,7 @@ button:active {
   color: var(--text-dark) !important;
 }
 
-/* Стили для графика recharts */
+/* для графика recharts */
 .recharts-text {
   fill: var(--text-dark) !important;
   font-size: 11px !important;
@@ -300,4 +300,98 @@ button:active {
 .recharts-tooltip-cursor {
   stroke: var(--primary-deep) !important;
   stroke-width: 1px !important;
+}
+
+
+/*  для мобильных устройств */
+@media (max-width: 768px) {
+  nav {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  
+  nav > div:first-child {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  
+  nav > div:first-child > div:first-child {
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  nav > div:first-child > div:last-child {
+    justify-content: center;
+  }
+  
+  .dashboard-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .measurement-card {
+    padding: 1rem;
+  }
+  
+  .auth-card {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+  
+  table {
+    font-size: 0.8rem;
+  }
+  
+  th, td {
+    padding: 0.3rem !important;
+  }
+  
+  input, button {
+    font-size: 0.85rem !important;
+  }
+}
+
+/* для мобильных устройств */
+@media (max-width: 768px) {
+
+  .dashboard {
+    padding-top: 120px !important;
+  }
+  
+  .container {
+    padding-top: 100px !important;
+  }
+  
+  nav {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  
+  nav > div:first-child {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  
+  nav > div:first-child > div:first-child {
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+  
+  nav > div:first-child > div:last-child {
+    justify-content: center;
+  }
+  
+  .dashboard-header {
+    flex-direction: column;
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+  
+  .welcome-text {
+    font-size: 1.2rem;
+  }
+  
+  .measurement-card {
+    padding: 1rem;
+  }
 }

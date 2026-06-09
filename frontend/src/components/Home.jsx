@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-
+import { API_URL } from '../config';
 function Home({ isAuthenticated, user }) {
   const navigate = useNavigate();
 

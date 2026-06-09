@@ -3,7 +3,7 @@ from typing import List
 
 
 def get_t_value(p: float, df: int) -> float:
-    """Получение квантилей распределения Стьюдента"""
+    """распределения Стьюдента"""
     if df < 1:
         return 0
     t_table = {
@@ -16,43 +16,32 @@ def get_t_value(p: float, df: int) -> float:
 
 
 def calculate_sample_statistics(data: List[float], confidence: float = 95):
-    """
-    Расчёт статистических характеристик выборки
-    data: список чисел
-    confidence: доверительная вероятность (90, 95, 99)
-    """
+
     if len(data) < 2:
         raise ValueError("Для статистической обработки нужно минимум 2 значения")
     
     n = len(data)
     data_sorted = sorted(data)
     
-    # 1. Основные статистики
     sum_val = sum(data)
     mean = sum_val / n
-    
-    # 2. Дисперсия и СКО (несмещённые)
+
     variance = sum((v - mean) ** 2 for v in data) / (n - 1)
     std_dev = math.sqrt(variance)
-    
-    # 3. Стандартная ошибка среднего
+
     sem = std_dev / math.sqrt(n)
-    
-    # 4. Медиана
+
     if n % 2 == 0:
         median = (data_sorted[n // 2 - 1] + data_sorted[n // 2]) / 2
     else:
         median = data_sorted[n // 2]
-    
-    # 5. Минимум, максимум, размах
+
     min_val = min(data)
     max_val = max(data)
     range_val = max_val - min_val
-    
-    # 6. Коэффициент вариации
+
     cv = (std_dev / abs(mean)) * 100 if mean != 0 else 0
-    
-    # 7. Доверительный интервал для среднего
+
     t_val = get_t_value(confidence, n - 1)
     margin = t_val * sem
     ci_lower = mean - margin
@@ -77,17 +66,14 @@ def calculate_sample_statistics(data: List[float], confidence: float = 95):
 
 
 def calculate_grubbs(data: List[float], confidence: float = 95):
-    """
-    Проверка на выбросы по критерию Граббса
-    """
+
     n = len(data)
     if n < 3:
         return {"has_outlier": False, "message": "Для проверки на выбросы нужно минимум 3 значения"}
     
     mean = sum(data) / n
     std_dev = math.sqrt(sum((v - mean) ** 2 for v in data) / (n - 1))
-    
-    # Критические значения критерия Граббса (приближённые)
+
     grubbs_table = {
         3: 1.155, 4: 1.481, 5: 1.715, 6: 1.887, 7: 2.020, 8: 2.126, 9: 2.215, 10: 2.290,
         11: 2.355, 12: 2.412, 13: 2.462, 14: 2.507, 15: 2.549, 16: 2.585, 17: 2.620, 18: 2.651,

@@ -35,26 +35,23 @@ def calculate_regression(points: List[Dict[str, float]], confidence: float = 95)
     
     b = (n * sum_xy - sum_x * sum_y) / denom
     a = (sum_y - b * sum_x) / n
-    
-    # 3. Предсказанные значения и остатки
+
     y_pred = [a + b * xi for xi in x]
     residuals = [y[i] - y_pred[i] for i in range(n)]
     
-    # 4. Остаточная сумма квадратов (RSS)
+ 
     rss = sum(r * r for r in residuals)
     
-    # 5. Общая сумма квадратов (TSS)
+
     y_mean = sum_y / n
     tss = sum((yi - y_mean) ** 2 for yi in y)
     
-    # 6. Коэффициент детерминации
+
     r2 = 1 - rss / tss if tss != 0 else 0
     r = math.sqrt(abs(r2))
     
-    # 7. Стандартная ошибка регрессии
     s = math.sqrt(rss / (n - 2)) if n > 2 else 0
     
-    # 8. Стандартные ошибки коэффициентов
     sxx = sum_x2 - sum_x * sum_x / n
     if sxx == 0:
         raise ValueError("Невозможно рассчитать стандартные ошибки")
@@ -62,19 +59,19 @@ def calculate_regression(points: List[Dict[str, float]], confidence: float = 95)
     sb = s / math.sqrt(sxx)
     sa = s * math.sqrt(1 / n + (sum_x * sum_x) / (n * sxx))
     
-    # 9. Квантиль Стьюдента
+
     t_val = get_t_value(confidence, n - 2)
     
-    # 10. Доверительные интервалы
+
     a_ci = t_val * sa
     b_ci = t_val * sb
     
-    # 11. Коэффициент корреляции Пирсона
+
     numerator = n * sum_xy - sum_x * sum_y
     denominator = math.sqrt((n * sum_x2 - sum_x * sum_x) * (n * sum_y2 - sum_y * sum_y))
     pearson_r = numerator / denominator if denominator != 0 else 0
     
-    # 12. Дополнительные параметры
+
     x_min = min(x)
     x_max = max(x)
     x_mean = sum_x / n
@@ -107,7 +104,7 @@ def calculate_regression(points: List[Dict[str, float]], confidence: float = 95)
 
 
 def predict_y_by_x(a: float, b: float, x0: float, n: int, x_mean: float, sxx: float, s: float, t_val: float):
-    """Прогнозирование Y по X"""
+
     y0 = a + b * x0
     sy = s * math.sqrt(1 + 1/n + (x0 - x_mean) ** 2 / sxx)
     ci_lower = y0 - t_val * sy
@@ -120,7 +117,7 @@ def predict_y_by_x(a: float, b: float, x0: float, n: int, x_mean: float, sxx: fl
 
 
 def predict_x_by_y(a: float, b: float, y0: float, n: int, x_mean: float, sxx: float, s: float, t_val: float):
-    """Прогнозирование X по Y (обратная калибровка)"""
+
     x0 = (y0 - a) / b
     syx = s / abs(b)
     ci_lower = x0 - t_val * syx

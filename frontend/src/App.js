@@ -19,7 +19,6 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem('access_token');
     if (token) {
-      // Проверяем валидность токена, загружая пользователя
       axios.get(`${API_URL}/api/auth/me`, {
         headers: { Authorization: `Bearer ${token}` }
       })
@@ -28,7 +27,6 @@ function App() {
         setIsAuthenticated(true);
       })
       .catch(() => {
-        // Токен невалидный — очищаем
         localStorage.removeItem('access_token');
         setIsAuthenticated(false);
         setUser(null);

@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Line, Scatter, XAxis, YAxis, CartesianGrid, ResponsiveContainer, ComposedChart, Tooltip } from 'recharts';
-
-const API_URL = 'http://localhost:8000';
+import { API_URL } from '../config';
+//const API_URL = 'http://localhost:8000';
 
 function Measurements({ user, setUser }) {
   const [loading, setLoading] = useState(true);

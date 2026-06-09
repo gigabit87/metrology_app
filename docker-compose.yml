@@ -15,7 +15,9 @@ services:
     container_name: metrology_backend
     restart: always
     env_file:
-      - ./backend/.env
+    - ./backend/.env
+    environment:
+    - FRONTEND_URL=${FRONTEND_URL}
     ports:
       - "8000:8000"
     depends_on:
@@ -31,6 +33,8 @@ services:
       - "80:80"
     depends_on:
       - backend
+    environment:
+    - REACT_APP_API_URL=${FRONTEND_URL}
 
 volumes:
   postgres_data:

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-
-const API_URL = 'http://localhost:8000';
+import { API_URL } from '../config';
+//const API_URL = 'http://localhost:8000';
 
 function Login({ setIsAuthenticated, setUser }) {
   const [formData, setFormData] = useState({ username: '', password: '' });
@@ -75,7 +75,7 @@ function Login({ setIsAuthenticated, setUser }) {
         </form>
         
         <Link to="/register">
-          <button className="link-btn">Создать аккаунт →</button>
+          <button className="link-btn">Создать аккаунт</button>
         </Link>
       </div>
     </div>

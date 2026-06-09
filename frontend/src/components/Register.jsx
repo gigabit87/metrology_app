@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
-
-const API_URL = 'http://localhost:8000';
+import { API_URL } from '../config';
+//const API_URL = 'http://localhost:8000';
 
 function Register({ setIsAuthenticated }) {
   const [formData, setFormData] = useState({
