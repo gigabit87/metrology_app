@@ -1,7 +1,10 @@
 FROM node:20-alpine AS frontend-build
+
 WORKDIR /app/frontend
+
 COPY frontend/package*.json ./
 RUN npm install
+
 COPY frontend/ .
 RUN npm run build
 
@@ -14,7 +17,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend/ .
 
-COPY --from=frontend-build /app/frontend/build /app/frontend/build
+
+COPY --from=frontend-build /app/frontend/build /app/static
 
 ENV PORT=8000
 
