@@ -18,6 +18,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost",
         "http://localhost:3000",
+        "https://metrologyapp-production.up.railway.app",  # 👈 ДОБАВЬТЕ ЭТО
         FRONTEND_URL,
     ],
     allow_credentials=True,
